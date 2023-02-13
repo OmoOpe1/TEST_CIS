@@ -1,7 +1,10 @@
 import os
 import requests
 from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy 
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv 
+
+load_dotenv()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -9,13 +12,14 @@ app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'weather.db')
 app.config['SECRET_KEY'] = 'itsasecret'
 db = SQLAlchemy(app)
+APP_ID = os.getenv('APP_ID')
 
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, )
 
 def get_weather_data(city):
-    url = f'https://api.openweathermap.org/data/2.5/weather?q={ city }&units=metric&appid=9887301325476f5094a6c6c9dc9bf692'
+    url = f'https://api.openweathermap.org/data/2.5/weather?q={ city }&units=metric&appid={ APP_ID }'
     r = requests.get(url).json()
     return r
 
